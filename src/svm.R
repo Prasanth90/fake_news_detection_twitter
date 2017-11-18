@@ -1,5 +1,5 @@
-training_data<-read.csv("svm_example.csv",header=TRUE)
-training_data<-as.matrix(training_data)
+
+
 
 ## Spam Dataset
 
@@ -88,7 +88,6 @@ for (step in step_sizes){
         dot_product<-w_t%*%training_data[i,-3]
         for(j in 1:length(b)){
           print((class*(dot_product+b[j])))
-            
           }
       }
   }
@@ -135,4 +134,10 @@ for (p in predict_us){
     }
     }  
   }
+  
+  
+print("Program is starting")
+training_data<-read.csv("svm_example.csv",header=TRUE)
+training_data<-as.matrix(training_data)
+fit(training_data)
 
