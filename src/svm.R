@@ -132,6 +132,6 @@ svm_fit_data<-fit(training_data)
 print(svm_fit_data[[1]])
 print(svm_fit_data[[2]])
 
-#Predicting the future data
+#Predicting the future data for classification
 test_data<-list(c(1,10),c(1,3),c(3,4),c(3,5),c(5,5),c(5,6),c(6,-5),c(5,8))
 predict(test_data, svm_fit_data)
