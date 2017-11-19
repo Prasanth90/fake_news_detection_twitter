@@ -86,39 +86,56 @@ fit<-function(training_data){
 }
 
 ##Predict Function 
-predict<-function(predict_us, svm_fit_data){
+predict<-function(predict_us,svm_fit_data){
+  
 
   for (p in predict_us){
     print(p)
     # sign( x.w+b )
     # dot product of every point in p with w
     # and then the sign
-    classification<-sign((t(svm_fit_data[[1]])%*%(p)+svm_fit_data[[2]])) ## it should be t(w)%*%p +b 
+    classification<-sign((t(svm_fit_data[[1]])%*%(p)+svm_fit_data[[2]])) ## t(w)%*%p +b 
                          print(classification)
                          #  TODO set visualization to true
-                         if(classification!=0){
-                           plot(p)  
+                         if(classification==-1){
+                           points(p[1],p[2],pch=24,bg='red')  
+                         }
+                         else if(classification==1){
+                           points(p[1],p[2],pch=24,bg='black')
                          }
   }
 
 }
 
 
-##Visualize function
-visualize<-function(data){
-    x_coord<-data[,1]
-    y_coord<-data[,2]
-    for(i in 1:nrow(training_data)){
-    if(data[i,"Class"]==-1){
-      print(data[i,"Class"])
-    plot(x_coord,y_coord,type="p",pch=19,col="red")
+## visualize function for plotting training data 
+
+visualize<-function(training_data){
+  
+  
+  x<-training_data[,1]
+  y<-training_data[,2]
+  
+  for(i in 1:nrow(training_data)){
+    if(training_data[i,3]==-1){
+      training_data[i,3]<-2
     }
-    else if(data[i,"Class"]==1){
-      print(data[i,"Class"])
-      points(x_coord,y_coord,type="p",pch=19,col="yellow")
-    }
-    }  
   }
+  plot(x,y,pch=19,col=as.integer(training_data[,"Class"]),xlim=c(-10,10),ylim=c(-10,10))
+  
+  
+  
+  
+}
+
+## Plotting hyperplanes
+
+hyperplane<-function(x,svm_fit_data,v){
+  
+  
+  
+  
+}
   
   
 print("Main Program")
