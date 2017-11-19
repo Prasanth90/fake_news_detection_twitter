@@ -153,7 +153,7 @@ visualize<-function(training_data,svm_fit_data){
   db1<-hyperplane(hyp_x_min, w, b, 0)
   db2 <- hyperplane(hyp_x_max, w, b, 0)
   db_v<-c(db1,db2)
-  lines(hyp_x_v,db_v,col='purple')
+  lines(hyp_x_v,db_v,col='yellow',lty=2)
 } 
 
 #hyperplane function
