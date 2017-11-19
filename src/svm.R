@@ -45,13 +45,13 @@ fit<-function(training_data){
           w_t<-w*transforms[[i]]
           found_option<-TRUE
           for(i in 1:nrow(training_data)){
-              class<-training_data[i,3]
-              dot_product<-w_t%*%training_data[i,-3]
-              #print(dot_product + b)
-              if((class*(dot_product+b))< 1){
-                #print("FOUND_OPTION_FALSE")
-                found_option<-FALSE
-              }
+            class<-training_data[i,3]
+            dot_product<-w_t%*%training_data[i,-3]
+            #print(dot_product + b)
+            if((class*(dot_product+b))< 1){
+              #print("FOUND_OPTION_FALSE")
+              found_option<-FALSE
+            }
           }
           if(found_option){
             key<-norm(as.matrix(w_t), type="f")
@@ -85,21 +85,24 @@ fit<-function(training_data){
 }
 
 ##Predict Function 
-predict<-function(test_data, svm_fit_data){
-
-  for (p in test_data){
-    #print(p)
+predict<-function(predict_us,svm_fit_data){
+  
+  for (p in predict_us){
+    print(p)
     # sign( x.w+b )
     # dot product of every point in p with w
     # and then the sign
     classification<-sign((t(svm_fit_data[[1]])%*%(p)+svm_fit_data[[2]])) ## t(w)%*%p +b 
-                         print(classification)
-                         #  TODO set visualization to true
-                         if(classification!=0){
-                           points(p[1],p[2],pch=24,bg='yellow')  
-                         }
+    print(classification)
+    #  TODO set visualization to true
+    if(classification==-1){
+      points(p[1],p[2],pch=24,bg='red')  
+    }
+    else if(classification==1){
+      points(p[1],p[2],pch=24,bg='black')
+    }
   }
-
+  
 }
 
 
@@ -124,40 +127,38 @@ visualize<-function(training_data,svm_fit_data){
   max_feature_value<-svm_fit_data[[4]]
   
   
-  plot(x,y,pch=19,col=as.integer(training_data[,"Class"]))
+  plot(x,y,pch=19,col=as.integer(training_data[,"Class"]),xlim=c(0,8),ylim=c(-5,12.5))
   
   #setting data range
   #datarange = (self.min_feature_value * 0.9, self.max_feature_value * 1.1)
   data_range <- list(as.numeric(min_feature_value) * 0.9,as.numeric(max_feature_value) * 1.1)
-  hyp_x_min=data_range[1]
-  hyp_x_max=data_range[2]
+  hyp_x_min<-data_range[1]
+  hyp_x_max<-data_range[2]
   
-
+  
   #positive support vector hyperplane
   psv1<-hyperplane(hyp_x_min,w,b,1)
   psv2<-hyperplane(hyp_x_max, w,b, 1)
-  abline(hyp_x_min,hyp_x_max,psv1,psv2)
-
+  hyp_x_v<-c(hyp_x_min,hyp_x_max)
+  psv_v<-c(psv1,psv2)
+  lines(hyp_x_v,psv_v,col='blue')
+  
   # negative support vector hyperplane
-  nsv1 = hyperplane(hyp_x_min, w, b, -1)
-  nsv2 = hyperplane(hyp_x_max, w, b, -1)
-  abline(nsv1,nsv2)
+  nsv1<-hyperplane(hyp_x_min, w, b, -1)
+  nsv2 <- hyperplane(hyp_x_max, w, b, -1)
+  nsv_v<-c(nsv1,nsv2)
+  lines(hyp_x_v,nsv_v,col='blue')
   
   # positive support vector hyperplane
-  db1 = hyperplane(hyp_x_min, w, b, 0)
-  db2 = hyperplane(hyp_x_max, w, b, 0)
-  abline(db1,db2)
+  db1<-hyperplane(hyp_x_min, w, b, 0)
+  db2 <- hyperplane(hyp_x_max, w, b, 0)
+  db_v<-c(db1,db2)
+  lines(hyp_x_v,db_v,col='purple')
 } 
 
 #hyperplane function
 hyperplane <- function(x,w,b,v){
-    print("w")
-    print(length(w))
-    print("w[1]")
-    print(w[1])
-    print("w[2]")
-    print(w[2])
-    result<-(-w[1]*as.numeric(x)-b+v)/w[2]
+  result<-(-w[1]*as.numeric(x)-b+v)/w[2]
 }
 
 
@@ -175,5 +176,7 @@ svm_fit_data<-fit(training_data)
 
 #Predicting the future data for classification
 test_data<-list(c(1,10),c(1,3),c(3,4),c(3,5),c(5,5),c(5,6),c(6,-5),c(5,8))
-predict(test_data, svm_fit_data)
+#visulaize the hyperplane and training data
 visualize(training_data,svm_fit_data)
+#predict the test_data
+predict(test_data, svm_fit_data)
