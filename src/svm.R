@@ -45,13 +45,13 @@ fit<-function(training_data){
           w_t<-w*transforms[[i]]
           found_option<-TRUE
           for(i in 1:nrow(training_data)){
-            class<-training_data[i,3]
-            dot_product<-w_t%*%training_data[i,-3]
-            #print(dot_product + b)
-            if((class*(dot_product+b))< 1){
-              #print("FOUND_OPTION_FALSE")
-              found_option<-FALSE
-            }
+              class<-training_data[i,3]
+              dot_product<-w_t%*%training_data[i,-3]
+              #print(dot_product + b)
+              if((class*(dot_product+b))< 1){
+                #print("FOUND_OPTION_FALSE")
+                found_option<-FALSE
+              }
           }
           if(found_option){
             key<-norm(as.matrix(w_t), type="f")
@@ -73,11 +73,11 @@ fit<-function(training_data){
       }
     }
     
-    #print(min_key)
-    #print(b_value)
-    #print(w_t_value)
-    optimized_weight<- w_t_value
-    optimized_bias <- b_value
+    print(min_key)
+    print(b_value)
+    print(w_t_value)
+    optimized_weight = w_t_value
+    optimized_bias = b_value
     latest_optimum<-w_t_value[1] + (step*2)
   }
   return_list<-list("weight" <- optimized_weight, "bias" = optimized_bias,"min_feature_value" = min_feature_value,"max_feature_value" = max_feature_value)
@@ -87,23 +87,25 @@ fit<-function(training_data){
 ##Predict Function 
 predict<-function(predict_us,svm_fit_data){
   
+
   for (p in predict_us){
     print(p)
     # sign( x.w+b )
     # dot product of every point in p with w
     # and then the sign
     classification<-sign((t(svm_fit_data[[1]])%*%(p)+svm_fit_data[[2]])) ## t(w)%*%p +b 
-    print(classification)
-    #  TODO set visualization to true
-    if(classification==-1){
-      points(p[1],p[2],pch=24,bg='red')  
-    }
-    else if(classification==1){
-      points(p[1],p[2],pch=24,bg='black')
-    }
+                         print(classification)
+                         #  TODO set visualization to true
+                         if(classification==-1){
+                           points(p[1],p[2],pch=24,bg='red')  
+                         }
+                         else if(classification==1){
+                           points(p[1],p[2],pch=24,bg='black')
+                         }
   }
-  
+
 }
+
 
 
 ## visualize function for plotting training data 
@@ -171,8 +173,8 @@ training_data<-as.matrix(training_data)
 
 #Fitting the training data
 svm_fit_data<-fit(training_data)
-#print(svm_fit_data[[1]])
-#print(svm_fit_data[[2]])
+print(svm_fit_data[[1]])
+print(svm_fit_data[[2]])
 
 #Predicting the future data for classification
 test_data<-list(c(1,10),c(1,3),c(3,4),c(3,5),c(5,5),c(5,6),c(6,-5),c(5,8))
