@@ -45,13 +45,13 @@ fit<-function(training_data){
           w_t<-w*transforms[[i]]
           found_option<-TRUE
           for(i in 1:nrow(training_data)){
-              class<-training_data[i,3]
-              dot_product<-w_t%*%training_data[i,-3]
-              #print(dot_product + b)
-              if((class*(dot_product+b))< 1){
-                #print("FOUND_OPTION_FALSE")
-                found_option<-FALSE
-              }
+            class<-training_data[i,3]
+            dot_product<-w_t%*%training_data[i,-3]
+            #print(dot_product + b)
+            if((class*(dot_product+b))< 1){
+              #print("FOUND_OPTION_FALSE")
+              found_option<-FALSE
+            }
           }
           if(found_option){
             key<-norm(as.matrix(w_t), type="f")
@@ -87,23 +87,23 @@ fit<-function(training_data){
 ##Predict Function 
 predict<-function(predict_us,svm_fit_data){
   
-
+  
   for (p in predict_us){
     print(p)
     # sign( x.w+b )
     # dot product of every point in p with w
     # and then the sign
     classification<-sign((t(svm_fit_data[[1]])%*%(p)+svm_fit_data[[2]])) ## t(w)%*%p +b 
-                         print(classification)
-                         #  TODO set visualization to true
-                         if(classification==-1){
-                           points(p[1],p[2],pch=24,bg='red')  
-                         }
-                         else if(classification==1){
-                           points(p[1],p[2],pch=24,bg='black')
-                         }
+    print(classification)
+    #  TODO set visualization to true
+    if(classification==-1){
+      points(p[1],p[2],pch=24,bg='red')  
+    }
+    else if(classification==1){
+      points(p[1],p[2],pch=24,bg='black')
+    }
   }
-
+  
 }
 
 
