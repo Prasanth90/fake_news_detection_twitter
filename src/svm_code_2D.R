@@ -38,7 +38,7 @@ preprocessing<-function(rawdata){
 feature_extraction<-function(processed_rawdata){
   
   
-  names(processed_rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites")
+  names(processed_rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites","Class")
   
   ## Removing white spaces in Tweet text
   
@@ -112,7 +112,7 @@ feature_selection<-function(feature_extracted_data){
   }
   
   visualizing_data<-data.frame("Retweets"=feature_extracted_data$Retweets,
-                               "Favorites"=feature_extracted_data$Favorites,"New_Feature"=feature_extracted_data$New_Feature)
+                               "Favorites"=feature_extracted_data$Favorites,"New_Feature"=feature_extracted_data$New_Feature,"Class"=feature_extracted_data$Class)
   return(visualizing_data)
 }
 
