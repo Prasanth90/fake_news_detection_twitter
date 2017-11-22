@@ -232,11 +232,11 @@ predict<-function(predict_us,svm_fit_data){
     if(classification==-1){
      ## points(p[1],p[2],pch=24,bg='red')
      ## scatter_object$points3d(p[1],p[2],p[3],pch=24,col=c("red"))
-      points3d(p[1],p[2],p[3],col='green')
+      points3d(p[1],p[2],p[3],col='green', size = 6)
     }
     else if(classification==1){
      ## points(p[1],p[2],pch=24,bg='black')
-      points3d(p[1],p[2],p[3],col='yellow')
+      points3d(p[1],p[2],p[3],col='yellow', size = 6)
     }
     pCnt<-pCnt+1
   }
@@ -244,18 +244,21 @@ predict<-function(predict_us,svm_fit_data){
   return(return_list)
 }
 
-visualize<-function(training_data){
+visualize<-function(training_data, color_spam, color_non_spam){
   x<-training_data[,1]
   y<-training_data[,2]
   z<-training_data[,3]
   
   for(i in 1:nrow(training_data)){
     if(training_data[i,4]==-1){
-      training_data[i,4]<-2
+      training_data[i,4]<- color_spam
+    }
+    if(training_data[i,4]==1){
+      training_data[i,4]<- color_non_spam
     }
   }
   
-  points3d(x,y,z,col=as.integer(training_data[,"Class"]))
+  points3d(x,y,z,col=training_data[,"Class"], size = 6)
 }
 
 process<-function(){
@@ -319,10 +322,13 @@ grid <- expand.grid(seq(from=min(sample_combined[,1]),to=max(sample_combined[,1]
 
 z <- (-svm_fit_data[[2]] - svm_fit_data[[1]][1]*grid[,1] - (svm_fit_data[[1]][2])*grid[,2]) / (svm_fit_data[[1]][3])
 
-plot3d(grid[,1],grid[,2],z,phi = 0, bty = "g", pch = 20, cex = 2, ticktype = "detailed", col= 'purple')
+plot3d(grid[,1],grid[,2],z, bty = "g", top = TRUE, sub = "SVM Classifier (3 features) for Spam detection - Hyperplane", box = TRUE, axes = TRUE, cex = 2, ticktype = "detailed", col= 'purple', xlab = "Retweets" , ylab = "MultiFeatures", zlab = "Favourites" )
+grid3d(c("x", "y+", "z"), lty=2, col = "steelblue", n = 20)
 
 #Plotting Training Data
-visualize(sample)
+visualize(sample, 'red', 'black')
+
+visualize(test_sample, 'yellow', 'green')
 
 #Predicting the Class for Test Data
-predict(test_data,svm_fit_data)
+#predict(test_data,svm_fit_data)
