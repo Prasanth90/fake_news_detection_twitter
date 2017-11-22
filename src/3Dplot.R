@@ -110,11 +110,11 @@ predict<-function(predict_us,svm_fit_data){
     if(classification==-1){
      ## points(p[1],p[2],pch=24,bg='red')
      ## scatter_object$points3d(p[1],p[2],p[3],pch=24,col=c("red"))
-      points3d(p[1],p[2],p[3],pch=24,col='green')
+      points3d(p[1],p[2],p[3],col='green')
     }
     else if(classification==1){
      ## points(p[1],p[2],pch=24,bg='black')
-      points3d(p[1],p[2],p[3],pch=24,col='blue')
+      points3d(p[1],p[2],p[3],col='yellow')
     }
     pCnt<-pCnt+1
   }
@@ -141,8 +141,15 @@ print("Main Program")
 sample<-read.csv("data.csv",header=TRUE)
 sample<-as.matrix(sample)
 svm_fit_data<-fit(sample)
-#test_data<-list(c(1,10,1),c(1,3,4),c(3,4,7),c(3,5,2),c(5,5,1),c(5,6,8),c(6,-5,1),c(6,-3,1),c(5,8,7), c(4,8,5))
-test_data<-list()
+test_data_svm<-list(c(1,10,1),c(1,3,4),c(3,4,7),c(3,5,2),c(5,5,1),c(5,6,8),c(6,-5,1),c(6,-3,1),c(5,8,7), c(4,8,5))
+test_sample<-read.csv("test_data.csv",header=TRUE)
+test_sample<-as.matrix(test_sample)
+test_data<- list()
+for (i in 1:nrow(test_sample)) {
+  test_data[[i]]<- c(test_sample[i,1],test_sample[i,2],test_sample[i,3]) 
+}
+
+#test_data<-list()
 
 detalization = 100;
 grid <- expand.grid(seq(from=min(sample[,1]),to=max(sample[,1]),length.out=detalization),                                                                                                         
@@ -151,7 +158,8 @@ grid <- expand.grid(seq(from=min(sample[,1]),to=max(sample[,1]),length.out=detal
 z <- (-svm_fit_data[[2]] - svm_fit_data[[1]][1]*grid[,1] - (svm_fit_data[[1]][2])*grid[,2]) / (svm_fit_data[[1]][3])
 
 plot3d(grid[,1],grid[,2],z,phi = 0, bty = "g",
-          pch = 20, cex = 2, ticktype = "detailed", col= 'blue')
+          pch = 20, cex = 2, ticktype = "detailed", col= 'purple')
 
-visualize(sample)
+
 predict(test_data,svm_fit_data)
+visualize(sample)
