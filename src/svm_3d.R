@@ -1,6 +1,7 @@
 ## Data Preprocessing ................
 library(rgl)
 library(stringr)
+library(stringi)
 options(print.max=100000)
 
 preprocessing<-function(rawdata){
@@ -46,7 +47,7 @@ feature_extraction<-function(processed_rawdata){
   ## Removing white spaces in Tweet text
   
   
-  processed_rawdata$Tweet_Text<-str_trim(processed_rawdata$Tweet_Text)
+  processed_rawdata$Tweet_Text<-stri_trim(stri_enc_toutf8(processed_rawdata$Tweet_Text, validate = TRUE))
   
   ## Finding Length of Tweet Text
   processed_rawdata["Length of Tweet"]<-nchar(processed_rawdata$Tweet_Text)
