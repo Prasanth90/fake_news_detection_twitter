@@ -52,7 +52,7 @@ fit<-function(training_data){
               found_option<-FALSE
             }
           }
-          if(counter <=75){
+          if(counter <=63){
             
             key<-norm(as.matrix(w_t), type="f")
             if((key <= min_key)) {
@@ -140,32 +140,33 @@ visualize<-function(training_data){
 print("Main Program")
 
 # Training the SVM
-sample<-read.csv("data.csv",header=TRUE)
+sample<-read.csv("Training_Dataset.csv",header=TRUE)
 sample<-as.matrix(sample)
 svm_fit_data<-fit(sample)
 
 
 #Loading the test data
-test_data_svm<-list(c(1,10,1),c(1,3,4),c(3,4,7),c(3,5,2),c(5,5,1),c(5,6,8),c(6,-5,1),c(6,-3,1),c(5,8,7), c(4,8,5))
-test_sample<-read.csv("test_data.csv",header=TRUE)
+#test_data_svm<-list(c(1,10,1),c(1,3,4),c(3,4,7),c(3,5,2),c(5,5,1),c(5,6,8),c(6,-5,1),c(6,-3,1),c(5,8,7), c(4,8,5))
+test_sample<-read.csv("Training_Dataset_test_data_700.csv",header=TRUE)
 test_sample<-as.matrix(test_sample)
 test_data<- list()
 for (i in 1:nrow(test_sample)) {
   test_data[[i]]<- c(test_sample[i,1],test_sample[i,2],test_sample[i,3]) 
 }
 
+sample_combined <- rbind(sample, test_sample)
+
 #Hyper Plane
 detalization = 100;
-grid <- expand.grid(seq(from=min(sample[,1]),to=max(sample[,1]),length.out=detalization),                                                                                                         
-                    seq(from=min(sample[,2]),to=max(sample[,2]),length.out=detalization)) 
+grid <- expand.grid(seq(from=min(sample_combined[,1]),to=max(sample_combined[,1]),length.out=detalization),                                                                                                         
+                    seq(from=min(sample_combined[,2]),to=max(sample_combined[,2]),length.out=detalization)) 
 
 z <- (-svm_fit_data[[2]] - svm_fit_data[[1]][1]*grid[,1] - (svm_fit_data[[1]][2])*grid[,2]) / (svm_fit_data[[1]][3])
 
-plot3d(grid[,1],grid[,2],z,phi = 0, bty = "g",
-          pch = 20, cex = 2, ticktype = "detailed", col= 'purple')
-
-#Predicting the Class for Test Data
-predict(test_data,svm_fit_data)
+plot3d(grid[,1],grid[,2],z,phi = 0, bty = "g", pch = 20, cex = 2, ticktype = "detailed", col= 'purple')
 
 #Plotting Training Data
 visualize(sample)
+
+#Predicting the Class for Test Data
+predict(test_data,svm_fit_data)
