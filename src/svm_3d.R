@@ -234,11 +234,11 @@ predict<-function(predict_us,svm_fit_data){
     if(classification==-1){
      ## points(p[1],p[2],pch=24,bg='red')
      ## scatter_object$points3d(p[1],p[2],p[3],pch=24,col=c("red"))
-      points3d(p[1],p[2],p[3],col='green', size = 6)
+      #points3d(p[1],p[2],p[3],col='green', size = 6)
     }
     else if(classification==1){
      ## points(p[1],p[2],pch=24,bg='black')
-      points3d(p[1],p[2],p[3],col='yellow', size = 6)
+      #points3d(p[1],p[2],p[3],col='yellow', size = 6)
     }
     pCnt<-pCnt+1
   }
@@ -287,10 +287,10 @@ bar_plot<-function(cm, title) {
 
 
 
-process<-function(){
+process<-function(input_file_name, prefix){
   options(java.parameters = "-Xmx4096m")
   
-  rawdata<-read.csv("RawDataSet.csv",header=FALSE)
+  rawdata<-read.csv(input_file_name, header=FALSE)
   ##names(rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites")
   
   ## Loading swear words file
@@ -311,18 +311,19 @@ process<-function(){
   ## Store in some location ......
   ## Writing Cleaned Dataset File
   
-  write.table(processed_rawdata,"Cleaned.csv", sep=",",row.names=FALSE)
+  write.table(processed_rawdata,paste(prefix, "Cleaned.csv",sep="_"), sep=",",row.names=FALSE)
   
   ## Writing Feature Extracted Dataset File
-  write.table(feature_extracted_data,"Feature_Extraction_Dataset.csv", sep=",",row.names=FALSE)
+  write.table(feature_extracted_data,paste(prefix,"Feature_Extraction_Dataset.csv",sep="_"), sep=",",row.names=FALSE)
   
   ## Writing Training Set file
-  write.table(training_data,"Training_Dataset.csv", sep=",",row.names=FALSE)
+  write.table(training_data, paste(prefix,"Dataset.csv", sep="_"), sep=",",row.names=FALSE)
 }
 
 print("Main Program")
 
-#process()
+process("RawTrainingDataSet.csv", "Training")
+process("RawTestDataSet.csv", "Test")
 
 # Training the SVM
 sample<-read.csv("Training_Dataset.csv",header=TRUE)
