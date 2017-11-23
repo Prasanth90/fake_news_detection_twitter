@@ -38,7 +38,7 @@ preprocessing<-function(rawdata){
 feature_extraction<-function(processed_rawdata){
   
   
-  names(processed_rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites","Class")
+  names(processed_rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites")
   
   ## Removing white spaces in Tweet text
   
@@ -102,17 +102,17 @@ feature_extraction<-function(processed_rawdata){
 
 feature_selection<-function(feature_extracted_data){
   
-  for(i in 1:nrow(feature_extracted_data)){
-    feature_extracted_data[i,"New_Feature"]<-sum(
-      feature_extracted_data$`No_of_@ Mentions`[i],feature_extracted_data$No_of_Hashtags[i],
-      feature_extracted_data$No_of_Emoticons[i],feature_extracted_data$No_of_URL[i],
-      feature_extracted_data$No_of_Spam_Words[i],feature_extracted_data$No_of_Swear_Words[i])
+ ## for(i in 1:nrow(feature_extracted_data)){
+ ##   feature_extracted_data[i,"New_Feature"]<-sum(
+ ##     feature_extracted_data$`No_of_@ Mentions`[i],feature_extracted_data$No_of_Hashtags[i],
+ ##     feature_extracted_data$No_of_Emoticons[i],feature_extracted_data$No_of_URL[i],
+ ##     feature_extracted_data$No_of_Spam_Words[i],feature_extracted_data$No_of_Swear_Words[i])
     
     
-  }
+##  }
   
   visualizing_data<-data.frame("Retweets"=feature_extracted_data$Retweets,
-                               "Favorites"=feature_extracted_data$Favorites,"New_Feature"=feature_extracted_data$New_Feature,"Class"=feature_extracted_data$Class)
+                               "Favorites"=feature_extracted_data$Favorites)
   return(visualizing_data)
 }
 
@@ -218,13 +218,15 @@ fit<-function(training_data){
 ##Predict Function 
 predict<-function(predict_us,svm_fit_data){
   
-  
+  pCnt<-1  
+  return_list<-list()
   for (p in predict_us){
     print(p)
     # sign( x.w+b )
     # dot product of every point in p with w
     # and then the sign
     classification<-sign((t(svm_fit_data[[1]])%*%(p)+svm_fit_data[[2]])) ## t(w)%*%p +b 
+    return_list[[pCnt]]<-classification
     print(classification)
     #  TODO set visualization to true
     if(classification==-1){
@@ -233,8 +235,9 @@ predict<-function(predict_us,svm_fit_data){
     else if(classification==1){
       points(p[1],p[2],pch=24,bg='black')
     }
+    pCnt<-pCnt+1
   }
-  
+  return(return_list)
 }
 
 
@@ -294,7 +297,23 @@ hyperplane <- function(x,w,b,v){
   result<-(-w[1]*as.numeric(x)-b+v)/w[2]
 }
 
+## Accuracy function
 
+Accuracy<-function(input, predicted){
+  
+  
+  ## Expected labels for test data
+ 
+ ## print(svm_fit_data)
+  
+  ## --- Change according to this ----
+  actual<-input[,4]
+  
+  ## confusionMatrix(actual,prediction)
+  table("Real"=actual,"Predicted"=predicted)
+  
+  
+}
 
 print("Main Program")
 
@@ -302,12 +321,14 @@ setwd("C:/Users/Simarpreet Singh/Desktop/Data Mining Project")
 
 install.packages("stringr")
 library(stringr)
+install.packages("caret")
+library(caret)
 options(java.parameters = "-Xmx4096m")
 options(print.max=100000)
 
 ## Loading Raw Data
 rawdata<-read.csv("RawDataset.csv",header=FALSE)
-##names(rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites")
+
 
 ## Loading swear words file
 frame2<-read.csv("swear_words.csv",header=FALSE)
@@ -318,9 +339,9 @@ frame2<-as.matrix(frame2)
 frame1<-read.csv("Spam_words.csv",header=FALSE)
 frame1<-as.matrix(frame1)
 
-processed_rawdata<-preprocessing(rawdata)
-feature_extracted_data<-feature_extraction(processed_rawdata)
-training_data<-feature_selection(feature_extracted_data)
+##processed_rawdata<-preprocessing(rawdata)
+##feature_extracted_data<-feature_extraction(processed_rawdata)
+##training_data<-feature_selection(feature_extracted_data)
 
 
 
@@ -338,7 +359,8 @@ write.table(training_data,"C:/Users/Simarpreet Singh/Desktop/Data Mining Project
 
 
 #Training Data
-training_data<-read.csv("Training_Dataset.csv",header=TRUE)
+## ------------- Temporary code -------------------
+training_data<-read.csv("Training_Dataset_Anil.csv",header=TRUE)
 training_data<-as.matrix(training_data)
 
 #Fitting the training data
@@ -347,8 +369,10 @@ print(svm_fit_data[[1]])
 print(svm_fit_data[[2]])
 
 #Predicting the future data for classification
-test_data<-list(c(1,10),c(1,3),c(3,4),c(3,5),c(5,5),c(5,6),c(6,-5),c(5,8))
+test_data<-list(c(1,10),c(1,3),c(-3,4),c(3,5),c(5,5),c(5,-8),c(6,-5),c(5,8))
 #visulaize the hyperplane and training data
 visualize(training_data,svm_fit_data)
 #predict the test_data
-predict(test_data, svm_fit_data)
+predicted_list<-predict(test_data, svm_fit_data)
+predicted_list<-unlist(predicted_list)
+Accuracy(test_data,predicted)
