@@ -40,7 +40,7 @@ preprocessing<-function(rawdata){
 
 ## Feature Extraction ...........................
 
-feature_extraction<-function(processed_rawdata){
+feature_extraction<-function(processed_rawdata, frame1, frame2){
   
   
   names(processed_rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites","Class")
@@ -286,7 +286,6 @@ bar_plot<-function(cm, title) {
 }
 
 
-
 process<-function(input_file_name, prefix){
   options(java.parameters = "-Xmx4096m")
   
@@ -303,7 +302,7 @@ process<-function(input_file_name, prefix){
   frame1<-as.matrix(frame1)
   
   processed_rawdata<-preprocessing(rawdata)
-  feature_extracted_data<-feature_extraction(processed_rawdata)
+  feature_extracted_data<-feature_extraction(processed_rawdata, frame1, frame2)
   training_data<-feature_selection(feature_extracted_data)
   
   
