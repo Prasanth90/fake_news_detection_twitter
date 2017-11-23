@@ -2,6 +2,7 @@
 library(rgl)
 library(stringr)
 library(stringi)
+library(caret)
 options(print.max=100000)
 
 preprocessing<-function(rawdata){
@@ -262,6 +263,30 @@ visualize<-function(training_data, color_spam, color_non_spam){
   points3d(x,y,z,col=training_data[,"Class"], size = 6)
 }
 
+Accuracy<-function(input, predicted){
+  ## Expected labels for test data
+  ## print(svm_fit_data)
+  ## --- Change according to this ----
+  actual<-input[,4]
+  #confusionMatrix(actual,predicted)
+  table("Real"=actual,"Predicted"=predicted)
+}
+
+bar_plot<-function(cm, title) {
+  correct<-c(cm[1],cm[4])
+  wrong<-c(cm[3],cm[2])
+  m<-c(correct,wrong)
+  mat<- matrix(m,nrow=2,ncol=2,byrow=TRUE)
+  rownames(mat)<-c("Correct", "Wrong")
+  colnames(mat)<-c("Spam", "NonSpam")
+  accuracy<-(cm[1] + cm[4])*100/(cm[1]+cm[2]+cm[3]+cm[4])
+  formatted_accuracy<-format(round(accuracy, 2), nsmall = 2)
+  accuracy_label<-paste("Accuracy = ", formatted_accuracy, "%")
+  barplot(mat,main=title, xlab=accuracy_label, ylab="Number of Samples", col=c("green","red"), legend = rownames(mat))
+}
+
+
+
 process<-function(){
   options(java.parameters = "-Xmx4096m")
   
@@ -303,6 +328,10 @@ print("Main Program")
 sample<-read.csv("Training_Dataset.csv",header=TRUE)
 sample<-as.matrix(sample)
 svm_fit_data<-fit(sample)
+sample_data<- list()
+for (i in 1:nrow(sample)) {
+  sample_data[[i]]<- c(sample[i,1],sample[i,2],sample[i,3]) 
+}
 
 
 #Loading the test data
@@ -332,4 +361,15 @@ visualize(sample, 'red', 'black')
 visualize(test_sample, 'yellow', 'green')
 
 #Predicting the Class for Test Data
-#predict(test_data,svm_fit_data)
+predicted_list<-predict(test_data, svm_fit_data)
+predicted_list<-unlist(predicted_list)
+cm<-Accuracy(test_sample,predicted_list)
+
+#Predicting the Class for training Data
+predicted_list_train_1<-predict(sample_data, svm_fit_data)
+predicted_list_train_1<-unlist(predicted_list_train_1)
+cm_training<-Accuracy(sample, predicted_list_train_1)
+
+par(mfrow=c(1,2))
+bar_plot(cm_training, "Accuracy of classifier using Training data")
+bar_plot(cm, "Accuracy of classifier using Test data")
