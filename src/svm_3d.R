@@ -221,7 +221,7 @@ fit<-function(training_data){
 }
 
 ##Predict Function 
-predict<-function(predict_us,svm_fit_data){
+svm_predict<-function(predict_us,svm_fit_data){
   pCnt<-1  
   return_list<-list()
   for (p in predict_us){
@@ -361,12 +361,12 @@ visualize(sample, 'red', 'black')
 visualize(test_sample, 'yellow', 'green')
 
 #Predicting the Class for Test Data
-predicted_list<-predict(test_data, svm_fit_data)
+predicted_list<-svm_predict(test_data, svm_fit_data)
 predicted_list<-unlist(predicted_list)
 cm<-Accuracy(test_sample,predicted_list)
 
 #Predicting the Class for training Data
-predicted_list_train_1<-predict(sample_data, svm_fit_data)
+predicted_list_train_1<-svm_predict(sample_data, svm_fit_data)
 predicted_list_train_1<-unlist(predicted_list_train_1)
 cm_training<-Accuracy(sample, predicted_list_train_1)
 

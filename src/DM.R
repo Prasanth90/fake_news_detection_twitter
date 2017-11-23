@@ -17,5 +17,5 @@ classifier_accuracy = c(svm_accuracy, knn_accuracy,naivebayes_accuracy)
 
 #Comparing the accuracy of the algorithms
 barplot(classifier_accuracy, main="Comparison of accuracy of different classifiers", 
-        ylim=c(0,100), xlab="Classifiers", ylab="Accuracy", names.arg= classifier_names ,col='green')
+        ylim=c(0,100), xlab="Classifiers", ylab="Accuracy", names.arg= classifier_names ,col=c('green','yellow','orange'))
 axis(2,at=seq(0,100,10))
