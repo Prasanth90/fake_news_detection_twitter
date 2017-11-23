@@ -371,5 +371,7 @@ predicted_list_train_1<-unlist(predicted_list_train_1)
 cm_training<-Accuracy(sample, predicted_list_train_1)
 
 par(mfrow=c(1,2))
-bar_plot(cm_training, "Accuracy of classifier using Training data")
-bar_plot(cm, "Accuracy of classifier using Test data")
+bar_plot(cm_training, "SVM - Accuracy of classifier using Training data")
+bar_plot(cm, "SVM - Accuracy of classifier using Test data")
+
+return(cm)
