@@ -8,9 +8,12 @@ svm_accuracy<- compute_accuracy(svm_confusion_matrix$value)
 knn_confusion_matrix<-source('compared_algorithms/KNN.R')
 knn_accuracy<- compute_accuracy(knn_confusion_matrix$value)
 
+naivebayes_confusion_matrix<-source('compared_algorithms/Naive_Bayes Comparison.R')
+naivebayes_accuracy<- compute_accuracy(naivebayes_confusion_matrix$value)
+
 #Classifier names and their accuracy for the test data
-classifier_names = c("SVM", "KNN")
-classifier_accuracy = c(svm_accuracy, knn_accuracy)
+classifier_names = c("SVM", "KNN","Naive Bayes")
+classifier_accuracy = c(svm_accuracy, knn_accuracy,naivebayes_accuracy)
 
 #Comparing the accuracy of the algorithms
 barplot(classifier_accuracy, main="Comparison of accuracy of different classifiers", 
