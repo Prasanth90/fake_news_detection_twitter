@@ -14,7 +14,9 @@ y<-dataset$Class
 
 ## Creating Model using inbuilt svm function
 
-svm_model<-svm(x,y,scale=FALSE)
+svm_model<-svm(x,y, type = 'C', scale=FALSE)
+
+print(summary(svm_model))
 
 ## Predicting on training data using the model created above
 
@@ -24,14 +26,8 @@ weights<-svm_model$coefs
 
 
 testdataset<-read.csv("Test_Dataset.csv",header=TRUE)
-pred<-predict(svm_model,testdataset[,-4],decision.values = TRUE, probability = TRUE)
-print(pred)
+pred<-predict(svm_model,testdataset[,-4],decision.values = TRUE)
 
-print(length(pred))
-print(length(y))
+confusion_matrix_svm_inbuilt<-table(pred,testdataset[,4])
 
-## Creating Confusion Matrix :
-svm_cm<-table(pred,y)
-print(svm_cm)
-
-
+print(confusion_matrix_svm_inbuilt)
