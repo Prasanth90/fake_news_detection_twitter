@@ -85,7 +85,7 @@ fit<-function(training_data){
 }
 
 ##Predict Function 
-predict<-function(predict_us,svm_fit_data){
+svm_predict<-function(predict_us,svm_fit_data){
   
   
   for (p in predict_us){
@@ -181,4 +181,4 @@ test_data<-list(c(1,10),c(1,3),c(3,4),c(3,5),c(5,5),c(5,6),c(6,-5),c(5,8))
 #visulaize the hyperplane and training data
 visualize(training_data,svm_fit_data)
 #predict the test_data
-predict(test_data, svm_fit_data)
+svm_predict(test_data, svm_fit_data)
