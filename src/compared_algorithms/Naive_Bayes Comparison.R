@@ -16,7 +16,7 @@ bar_plot<-function(cm, title) {
 }
 
 Accuracy<-function(){
-  actual<-test_set[,4]
+  actual<-testdataset[,4]
   #print(actual)
   prediction<-pred
   print(length(prediction))
@@ -26,20 +26,22 @@ Accuracy<-function(){
   return(naivebayes_cm)
 }
 
-## Loading Test Data Set
-test_set<-read.csv("Test_Dataset.csv",header=TRUE)
+## Loading Train Data Set
+traindataset<-read.csv("Training_Dataset.csv",header=TRUE)
 
 ## Creating model for Naive Bayes
-naivebayes<-naive_bayes(test_set[,-4],as.factor(test_set[,4]),usekernel = TRUE)
+naivebayes<-naive_bayes(traindataset[,-4],as.factor(traindataset$Class),usekernel = TRUE)
+
+
+testdataset<-read.csv("Test_Dataset.csv",header=TRUE)
 
 ## Predicting the model
-pred<-predict(naivebayes)
+pred<-predict(naivebayes,testdataset[,-4])
+print(pred)
 
-## creating Confusion Matrix
-cm<-confusionMatrix(test_set[,4],pred)
 
 naivebayes_cm<-Accuracy()
 
 plot(naivebayes)
 bar_plot(naivebayes_cm,"Naive Bayes classsifier for test data")
-return(naivebayes_cm)
+#return(naivebayes_cm)

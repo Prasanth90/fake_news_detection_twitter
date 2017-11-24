@@ -40,5 +40,5 @@ bar_plot<-function(cm, title) {
 
 dt_cm<-Accuracy()
 print(dt_cm)
-bar_plot(dt_cm,"Decision tree classifier for test data")
+bar_plot(dt_cm,"Decision Tree - Accuracy of classifier using Test data")
 return(dt_cm)

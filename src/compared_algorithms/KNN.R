@@ -86,6 +86,6 @@ pred_data<-data.frame(test.testdataset,pred=knn.100)
 knn_cm<-Accuracy()
 
 par(mfrow=c(1,2))
-bar_plot(knn_cm,"KNN CLASSIFIER FOR TEST DATA")
+bar_plot(knn_cm,"KNN - Accuracy of classifier using Test data")
 #bar_plot(knn_cm,"KNN ALGORITHM CLASSIFICATION FOR TEST DATA")
 return(knn_cm)

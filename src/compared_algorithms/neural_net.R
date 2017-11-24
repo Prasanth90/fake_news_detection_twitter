@@ -2,6 +2,8 @@ library(neuralnet)
 library(scatterplot3d)
 library(caret)
 
+set.seed(111)
+
 bar_plot<-function(cm, title) {
   correct<-c(cm[1],cm[4])
   wrong<-c(cm[3],cm[2])
@@ -76,7 +78,7 @@ test.def <- testdataset$Class
 
 #print(test.def)
 #Give the non-scaled input to neural network API
-NN1<-neuralnet(Class ~ Retweets + Favorites + New_Feature, traindataset.bkup, hidden=4)
+NN1<-neuralnet(Class ~ Retweets + Favorites + New_Feature, traindataset.bkup, hidden=4, startweights = c(8,5))
 #plot(NN1)
 #print(NN1$data[,4])
 
@@ -89,6 +91,6 @@ NN1<-neuralnet(Class ~ Retweets + Favorites + New_Feature, traindataset.bkup, hi
 
 pred_data<-compute(NN1,test.testdataset)
 nn_cm<-Accuracy()
-bar_plot(nn_cm,"Accuracy for Neural Network")
+bar_plot(nn_cm,"Neural Network - Accuracy of classifier using Test data")
 
 
