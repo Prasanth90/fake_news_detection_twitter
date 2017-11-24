@@ -44,4 +44,4 @@ naivebayes_cm<-Accuracy()
 
 plot(naivebayes)
 bar_plot(naivebayes_cm,"Naive Bayes classsifier for test data")
-#return(naivebayes_cm)
+return(naivebayes_cm)
