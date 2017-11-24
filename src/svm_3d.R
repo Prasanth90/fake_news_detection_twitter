@@ -180,7 +180,7 @@ fit<-function(training_data){
             
             key<-norm(as.matrix(w_t), type="f")
             if((key <= min_key)) {
-              print("Optimizing")
+              #print("Optimizing")
               min_key <- key
               b_value <- b
               w_t_value <- w_t
@@ -191,7 +191,7 @@ fit<-function(training_data){
             
             key<-norm(as.matrix(w_t), type="f")
             if((key <= min_key)) {
-              print("Optimizing")
+              #print("Optimizing")
               min_key <- key
               b_value <- b
               w_t_value <- w_t
@@ -202,7 +202,7 @@ fit<-function(training_data){
       
       if(w[1]<0){
         optimized<-TRUE
-        print("Optimized a step")
+        print("Optimized Weight")
       }
       else{
         w<-w-step
@@ -327,7 +327,7 @@ process("RawTestDataSet.csv", "Test")
 # Training the SVM
 sample<-read.csv("Training_Dataset.csv",header=TRUE)
 sample<-as.matrix(sample)
-svm_fit_data<-fit(sample)
+svm_time_fit<-system.time(svm_fit_data<-fit(sample))
 sample_data<- list()
 for (i in 1:nrow(sample)) {
   sample_data[[i]]<- c(sample[i,1],sample[i,2],sample[i,3]) 
@@ -361,7 +361,7 @@ visualize(sample, 'red', 'black')
 visualize(test_sample, 'yellow', 'green')
 
 #Predicting the Class for Test Data
-predicted_list<-svm_predict(test_data, svm_fit_data)
+svm_time_predict<-system.time(predicted_list<-svm_predict(test_data, svm_fit_data))
 predicted_list<-unlist(predicted_list)
 cm<-Accuracy(test_sample,predicted_list)
 
@@ -370,8 +370,15 @@ predicted_list_train_1<-svm_predict(sample_data, svm_fit_data)
 predicted_list_train_1<-unlist(predicted_list_train_1)
 cm_training<-Accuracy(sample, predicted_list_train_1)
 
-par(mfrow=c(1,2))
+par(mfrow=c(1,3))
 bar_plot(cm_training, "SVM - Accuracy of classifier using Training data")
 bar_plot(cm, "SVM - Accuracy of classifier using Test data")
+
+time_for_inbuilt_svm<-system.time(source('svm_inbuilt.R'))
+time_for_impl_svm <- svm_time_fit + svm_time_predict
+
+barplot(c(time_for_inbuilt_svm[[3]], time_for_impl_svm[[3]]), main="Comparison of time between inbuilt and Custom  Built SVM", 
+        ylim=c(0,10), xlab="Classifiers", ylab="Accuracy", names.arg= c("InBuilt", "Custom") ,col=c('green','yellow'))
+
 
 return(cm)
