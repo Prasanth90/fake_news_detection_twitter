@@ -1,12 +1,6 @@
 # fake_news_detection_twitter
 Classification algorithm implemented using SVM algorithm to detect fake news in social media (Twitter)
 
-# Dillinger
-
-[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
-
-
-
 # Packages That has be installed:
 - caret
 - neuralnet
