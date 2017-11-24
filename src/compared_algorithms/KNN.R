@@ -72,7 +72,7 @@ knn.1 <-  knn(train.traindataset, test.testdataset, train.def, k=1)
 knn.2 <-  knn(train.traindataset, test.testdataset, train.def, k=2)
 knn.100 <- knn(train.traindataset, test.testdataset, train.def, k=100)
 
-s<-scatterplot3d(train.traindataset[,c("Retweets", "Favorites", "New_Feature")],color=c('black','red')[as.numeric(train.def)],pch=c(21,24)[as.numeric(train.def)],xlim=c(-1,5),ylim=c(-1,5),zlim=c(-1,5))
+s<-scatterplot3d(train.traindataset[,c("Retweets", "Favorites", "New_Feature")],color=c('black','red')[as.numeric(train.def)],pch=c(21,24)[as.numeric(train.def)],xlim=c(-1,5),ylim=c(-1,5),zlim=c(-1,5), main = "KNN - 3D Scatter Plot for Features with Classification")
 s$points3d(test.testdataset[,c("Retweets", "Favorites", "New_Feature")],col=c('green','yellow')[as.numeric(knn.1)],pch=c(21,24)[as.numeric(knn.1)])
 
 #scatterplot3d(test.testdataset[,c("Retweets", "Favorites", "New_Feature")],color=c('green','yellow')[as.numeric(test.def)],pch=c(21,24)[as.numeric(test.def)],xlim=c(-1,5),ylim=c(-1,5),zlim=c(-1,5))

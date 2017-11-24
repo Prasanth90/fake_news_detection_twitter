@@ -82,15 +82,16 @@ NN1<-neuralnet(Class ~ Retweets + Favorites + New_Feature, traindataset.bkup, hi
 #plot(NN1)
 #print(NN1$data[,4])
 
-#s<-scatterplot3d(train.traindataset[,c("Retweets", "Favorites", "New_Feature")],color=c('black','red')[as.numeric(train.def)],pch=c(21,24)[as.numeric(train.def)],xlim=c(-1,5),ylim=c(-1,5),zlim=c(-1,5))
-#s$points3d(test.testdataset[,c("Retweets", "Favorites", "New_Feature")],col=c('green','yellow')[as.numeric(test.def)],pch=c(21,24)[as.numeric(test.def)])
+s<-scatterplot3d(train.traindataset[,c("Retweets", "Favorites", "New_Feature")],color=c('black','red')[as.numeric(train.def)],pch=c(21,24)[as.numeric(train.def)],xlim=c(-1,5),ylim=c(-1,5),zlim=c(-1,5), main = "Neural Network")
+s$points3d(test.testdataset[,c("Retweets", "Favorites", "New_Feature")],col=c('green','yellow')[as.numeric(test.def)],pch=c(21,24)[as.numeric(test.def)])
 
-#legend("topleft",col=c('black','red','yellow','green'),pch=c(21,24),bg=c(1,1),
-       #legend=c("TRAINED AS SPAM","TRAINED AS NON-SPAM","PREDICTED AS SPAM","PREDICTED AS NON-SPAM"),
-       #title="Symbols",bty="n",cex=.8)
+legend("topleft",col=c('black','red','yellow','green'),pch=c(21,24),bg=c(1,1),
+       legend=c("TRAINED AS SPAM","TRAINED AS NON-SPAM","PREDICTED AS SPAM","PREDICTED AS NON-SPAM"),
+       title="Symbols",bty="n",cex=.8)
 
 pred_data<-compute(NN1,test.testdataset)
 nn_cm<-Accuracy()
 bar_plot(nn_cm,"Neural Network - Accuracy of classifier using Test data")
 
 
+return(nn_cm)

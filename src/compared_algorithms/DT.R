@@ -8,7 +8,7 @@ traindataset<-read.csv("Training_Dataset.csv")
 #New_Feature = c(13, 25, 33, 42, 55, 43, 11, 60,76,43),
 #Class = c(FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE))
 mytree <- rpart(Class ~ Retweets + Favorites + New_Feature, data = traindataset, method = "class",minsplit=2, minbucket = 1,cp=-1)
-fancyRpartPlot(mytree)
+fancyRpartPlot(mytree, main = "Decision Tree")
 
 testdataset<-read.csv("Test_Dataset.csv")
 test.def <- testdataset$Class

@@ -24,11 +24,11 @@ neuralnetwork_confusion_matrix<-source('compared_algorithms/neural_net.R')
 neuralnetwork_accuracy<-compute_accuracy(neuralnetwork_confusion_matrix$value)
 
 #Classifier names and their accuracy for the test data
-classifier_names = c("SVM","KNN","NB","DT")
-classifier_accuracy = c(svm_accuracy, knn_accuracy,naivebayes_accuracy,dt_accuracy)
+classifier_names = c("SVM","KNN","NB","DT", "NN")
+classifier_accuracy = c(svm_accuracy, knn_accuracy,naivebayes_accuracy,dt_accuracy, neuralnetwork_accuracy)
 
 #Comparing the accuracy of the algorithms
 #barplot for all the given classifiers
 barplot(classifier_accuracy, main="Comparison of accuracy of different classifiers", 
-        ylim=c(0,100), xlab="Classifiers", ylab="Accuracy", names.arg= classifier_names ,col=c('green','yellow','orange','blue'))
+        ylim=c(0,100), xlab="Classifiers", ylab="Accuracy", names.arg= classifier_names ,col=c('green','yellow','orange','blue', 'red'))
 axis(2,at=seq(0,100,10))
