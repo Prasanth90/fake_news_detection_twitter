@@ -127,16 +127,17 @@ fit<-function(training_data){
   optimized_weight<-c()
   optimized_bias<-0
   
+  # Assuming all the possible transforms for the 3d data (To find which quadrant the data lies)
   transforms<-list(c(1, 1,1),c(1,1,-1), c(-1, 1,-1), c(-1, -1,-1), c(1, -1,-1)
                    ,c(1,-1,1),c(-1,1,1),c(-1,-1,1))
   
   #compute min and max of feature vectors
-  
   min_feature_value<-min(training_data[,-4])
   max_feature_value<-max(training_data[,-4])
   print(min_feature_value)
   print(max_feature_value)
   
+  #Asssuming step sizes based on Max Feature value;
   step_sizes<-c(max_feature_value * 0.1, max_feature_value * 0.01)
   
   # extremely expensive
@@ -144,6 +145,8 @@ fit<-function(training_data){
   # we dont need to take as small of steps
   # with b as we do w
   b_multiple<-5
+
+  #Assuming the latest optimum based on the Max feature value
   latest_optimum<-max_feature_value*10
   
   hm<-c()
@@ -155,12 +158,14 @@ fit<-function(training_data){
     b_value <-NULL
     w_t_value<-c()
     while(!optimized){
+      #Iterating for all combinations of b
       for (b in seq((max_feature_value * b_range_multiple),
                     max_feature_value * b_range_multiple,
                     step * b_multiple)){
         
         
         for (i in 1:length(transforms)) {
+          # Multiply with assumed value of w with each transform
           w_t<-w*transforms[[i]]
           
           found_option<-TRUE
@@ -168,19 +173,23 @@ fit<-function(training_data){
           
           for(i in 1:nrow(training_data)){
             class<-training_data[i,4]
+            #Find the Dot product of all the feature with the computed weight matrix
             dot_product<-w_t%*%training_data[i,-4]
             
             
             if((class*(dot_product+b))< 1){
+              # If any feature value's dot product is less than 1, then ignore that weight matrix
               counter <- counter + 1
               found_option<-FALSE
             }
           }
+          # Consider a threshold for the error rate
           if(counter <=63){
-            
+            #Compute the normaized value for the Weight Matrix
             key<-norm(as.matrix(w_t), type="f")
             if((key <= min_key)) {
               #print("Optimizing")
+              # If the newly computed weight matrix is less, then it is more optimized than the previous one
               min_key <- key
               b_value <- b
               w_t_value <- w_t
@@ -260,6 +269,7 @@ visualize<-function(training_data, color_spam, color_non_spam){
     }
   }
   
+  # Plotting the data samples for the feature vector
   points3d(x,y,z,col=training_data[,"Class"], size = 6)
 }
 
@@ -272,6 +282,8 @@ Accuracy<-function(input, predicted){
   table("Real"=actual,"Predicted"=predicted)
 }
 
+
+# A generic function to plot the Bar plot for accuracy comparisons
 bar_plot<-function(cm, title) {
   correct<-c(cm[1],cm[4])
   wrong<-c(cm[3],cm[2])

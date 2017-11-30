@@ -1,5 +1,7 @@
 # fake_news_detection_twitter
-Classification algorithm implemented using SVM algorithm to detect fake news in social media (Twitter)
+- SVM Algorithm implmented from scratch to detect fake news in social media (Twitter)
+- KNN, Naive Bayes, Neural Network, Decision Tree algorithms are used from the inbuilt R package for Comparison of accuracy with our implementation.
+
 
 # Packages That has be installed:
 - caret
