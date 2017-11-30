@@ -1,5 +1,7 @@
 ## Data Preprocessing ................
 
+## Cleaning Raw Dataset 
+
 preprocessing<-function(rawdata){
   
   ## Changing Datatypes
@@ -28,7 +30,7 @@ preprocessing<-function(rawdata){
     
     
   }
-  ##  rawdata[,1]<-as.Date(rawdata[,1])
+  
   return(rawdata)
 }
 
@@ -37,12 +39,10 @@ preprocessing<-function(rawdata){
 
 feature_extraction<-function(processed_rawdata){
   
-  
-  names(processed_rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites")
+  ## Giving names to columns in Processed Data Set
+  names(processed_rawdata)<-c("Date","Tweet_Text","Tweet_id","User_id","User_Name","User_Screen_Name","Retweets","Favorites","Class")
   
   ## Removing white spaces in Tweet text
-  
-  
   processed_rawdata$Tweet_Text<-str_trim(processed_rawdata$Tweet_Text)
   
   ## Finding Length of Tweet Text
@@ -101,18 +101,11 @@ feature_extraction<-function(processed_rawdata){
 ## Feature Selection....
 
 feature_selection<-function(feature_extracted_data){
-  
- ## for(i in 1:nrow(feature_extracted_data)){
- ##   feature_extracted_data[i,"New_Feature"]<-sum(
- ##     feature_extracted_data$`No_of_@ Mentions`[i],feature_extracted_data$No_of_Hashtags[i],
- ##     feature_extracted_data$No_of_Emoticons[i],feature_extracted_data$No_of_URL[i],
- ##     feature_extracted_data$No_of_Spam_Words[i],feature_extracted_data$No_of_Swear_Words[i])
-    
-    
-##  }
+
   
   visualizing_data<-data.frame("Retweets"=feature_extracted_data$Retweets,
-                               "Favorites"=feature_extracted_data$Favorites)
+                               "Favorites"=feature_extracted_data$Favorites,
+                               "Class"=feature_extracted_data$Class)
   return(visualizing_data)
 }
 
@@ -122,6 +115,7 @@ fit<-function(training_data){
   optimized_weight<-c()
   optimized_bias<-0
   
+  ## Possible combinations for initial value of weight vector
   transforms<-list(c(1, 1), c(-1, 1), c(-1, -1), c(1, -1))
   
   
@@ -130,25 +124,26 @@ fit<-function(training_data){
   print("Training Data Set")
   print(training_data)
   
-  #compute min and max of feature vectors
+  #compute min and max value of feature vectors
   
   min_feature_value<-min(training_data[,-3])
   max_feature_value<-max(training_data[,-3])
   
-  
+  ## Selecting steps for weight vector
   step_sizes<-c(max_feature_value * 0.1, max_feature_value * 0.01)
   
-  # extremely expensive
+  # Initial value of bias
   b_range_multiple<-2
-  # we dont need to take as small of steps
-  # with b as we do w
+  
+  ## Seelecting increment value for bias at each step
   b_multiple<-5
   latest_optimum<-max_feature_value*10
   
   hm<-c()
   for (step in step_sizes){
+    # Initial value of weight vector
     w<-c(latest_optimum,latest_optimum)
-    # we can do this because convex
+    
     optimized<-FALSE
     min_key <- 100000000
     b_value <-NULL
@@ -166,19 +161,25 @@ fit<-function(training_data){
           
           for(i in 1:nrow(training_data)){
             class<-training_data[i,3]
-            dot_product<-w_t%*%training_data[i,-3]
-            #print(dot_product + b)
+            ## Evaluating dot product t(w)*x
+            dot_product<-as.matrix(training_data[i,-3])%*%w_t
+            
+            ## Evaluating constraint for linear svm yi(t(w)*x+b)
             if((class*(dot_product+b))< 1){
-              #print("FOUND_OPTION_FALSE")
-              found_option<-FALSE
+             
+              
               counter<- counter +1
+              found_option<-FALSE
             }
           }
           
-          if(counter<=3){
+          #
+          if(counter<=10){
+            # Calculating norm of weight vector
+            # Optimising weight and bias
             key<-norm(as.matrix(w_t), type="f")
             if((key <= min_key)) {
-              min_key <- key
+             min_key <- key
               b_value <- b
               w_t_value <- w_t
             }
@@ -199,6 +200,7 @@ fit<-function(training_data){
         optimized<-TRUE
         print("Optimized a step")
       }
+      # Reducing weight vector by a step value
       else{
         w<-w-step
       }
@@ -207,7 +209,9 @@ fit<-function(training_data){
     print(min_key)
     print(b_value)
     print(w_t_value)
+    # Optimised weight value
     optimized_weight = w_t_value
+    # Optimised bias value
     optimized_bias = b_value
     latest_optimum<-w_t_value[1] + (step*2)
   }
@@ -216,19 +220,19 @@ fit<-function(training_data){
 }
 
 ##Predict Function 
-svm_predict<-function(predict_us,svm_fit_data){
+predict<-function(predict_us,svm_fit_data){
   
   pCnt<-1  
   return_list<-list()
   for (p in predict_us){
     print(p)
-    # sign( x.w+b )
-    # dot product of every point in p with w
-    # and then the sign
+    
+    # Checking sign of t(w)*x+b
     classification<-sign((t(svm_fit_data[[1]])%*%(p)+svm_fit_data[[2]])) ## t(w)%*%p +b 
     return_list[[pCnt]]<-classification
     print(classification)
-    #  TODO set visualization to true
+    
+    # Classifying spam and non spam points
     if(classification==-1){
       points(p[1],p[2],pch=24,bg='red')  
     }
@@ -263,7 +267,10 @@ visualize<-function(training_data,svm_fit_data){
   max_feature_value<-svm_fit_data[[4]]
   
   
-  plot(x,y,pch=19,col=as.integer(training_data[,"Class"]),xlim=c(0,25),ylim=c(0,25))
+  plot(x,y,pch=19,col=as.integer(training_data[,"Class"]),xlim=c(0,45),ylim=c(0,40),xlab="Retweets",ylab="Favorites",main=
+         "Linear SVM Plot for 2 features - Retweets & Favorites")
+  
+  legend("right",legend=c("Spam", "Non-Spam"),col=c("black", "red"), lty=1:2, cex=0.8)
   
   #setting data range
   #datarange = (self.min_feature_value * 0.9, self.max_feature_value * 1.1)
@@ -285,7 +292,7 @@ visualize<-function(training_data,svm_fit_data){
   nsv_v<-c(nsv1,nsv2)
   lines(hyp_x_v,nsv_v,col='blue')
   
-  # positive support vector hyperplane
+  # separating hyperplane
   db1<-hyperplane(hyp_x_min, w, b, 0)
   db2 <- hyperplane(hyp_x_max, w, b, 0)
   db_v<-c(db1,db2)
@@ -302,22 +309,18 @@ hyperplane <- function(x,w,b,v){
 Accuracy<-function(input, predicted){
   
   
-  ## Expected labels for test data
+## Expected labels for test data
  
- ## print(svm_fit_data)
+ actual<-input[,3]
   
-  ## --- Change according to this ----
-  actual<-input[,4]
-  
-  ## confusionMatrix(actual,prediction)
-  table("Real"=actual,"Predicted"=predicted)
+   
+ print(table("Real"=actual,"Predicted"=predicted))
   
   
 }
 
 print("Main Program")
 
-#setwd("C:/Users/Simarpreet Singh/Desktop/Data Mining Project")
 
 library(stringr)
 library(caret)
@@ -325,7 +328,7 @@ options(java.parameters = "-Xmx4096m")
 options(print.max=100000)
 
 ## Loading Raw Data
-rawdata<-read.csv("RawDataset.csv",header=FALSE)
+rawdata<-read.csv("RawTrainingDataSet_2D.csv",header=FALSE)
 
 
 ## Loading swear words file
@@ -337,40 +340,46 @@ frame2<-as.matrix(frame2)
 frame1<-read.csv("Spam_words.csv",header=FALSE)
 frame1<-as.matrix(frame1)
 
-##processed_rawdata<-preprocessing(rawdata)
-##feature_extracted_data<-feature_extraction(processed_rawdata)
-##training_data<-feature_selection(feature_extracted_data)
+processed_rawdata<-preprocessing(rawdata)
+feature_extracted_data<-feature_extraction(processed_rawdata)
+training_data<-feature_selection(feature_extracted_data)
+
+
 
 
 
 ## Store in some location ......
 ## Writing Cleaned Dataset File
 
-write.table(processed_rawdata,"C:/Users/Simarpreet Singh/Desktop/Data Mining Project/Cleaned.csv", sep=",",row.names=FALSE)
+write.table(processed_rawdata,"Cleaned.csv", sep=",",row.names=FALSE)
 
 ## Writing Feature Extracted Dataset File
-write.table(feature_extracted_data,"C:/Users/Simarpreet Singh/Desktop/Data Mining Project/Feature_Extraction_Dataset.csv", sep=",",row.names=FALSE)
+write.table(feature_extracted_data,"Feature_Extraction_Dataset.csv", sep=",",row.names=FALSE)
 
 ## Writing Training Set file
-write.table(training_data,"C:/Users/Simarpreet Singh/Desktop/Data Mining Project/Training_Dataset.csv", sep=",",row.names=FALSE)
+write.table(training_data,"Training_Dataset.csv", sep=",",row.names=FALSE)
 
 
-
-#Training Data
-## ------------- Temporary code -------------------
-training_data<-read.csv("Training_Dataset_Anil.csv",header=TRUE)
-training_data<-as.matrix(training_data)
 
 #Fitting the training data
 svm_fit_data<-fit(training_data)
 print(svm_fit_data[[1]])
 print(svm_fit_data[[2]])
 
-#Predicting the future data for classification
-test_data<-list(c(1,10),c(1,3),c(-3,4),c(3,5),c(5,5),c(5,-8),c(6,-5),c(5,8))
-#visulaize the hyperplane and training data
+#Predicting the test data for classification
+test_data<-read.csv("Test_Dataset_2D.csv",header=TRUE)
+test_data_list<-list()
+
+for(i in 1: nrow(test_data)){
+  
+test_data_list[[i]]<-c(test_data[i,1],test_data[i,2])
+
+}
+
+#visualize the hyperplane and training data
 visualize(training_data,svm_fit_data)
 #predict the test_data
-predicted_list<-svm_predict(test_data, svm_fit_data)
-predicted_list<-unlist(predicted_list)
+predicted<-predict(test_data_list, svm_fit_data)
+predicted<-unlist(predicted)
 Accuracy(test_data,predicted)
+
